@@ -15,7 +15,7 @@ ifdef STATIC_LUA
 
   lib/lua/src/liblua.a:
 	$(E) MAKE $@
-	$(Q) $(MAKE) -s -C lib/lua/ posix CC='$(CC)'
+	$(Q) $(MAKE) $(if $(V),,-s) -C lib/lua/ posix CC='$(CC)'
 else
   LUA_PC = $(or \
     $(call PKGFIND, lua53 lua5.3 lua-5.3), \
