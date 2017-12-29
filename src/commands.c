@@ -1,3 +1,5 @@
+#include <lua.h>
+#include <lauxlib.h>
 #include "editor.h"
 #include "edit.h"
 #include "move.h"
@@ -538,6 +540,16 @@ static void cmd_load_syntax(const char* UNUSED(pf), char **args)
         if (!find_syntax(filetype)) {
             load_syntax_by_filetype(filetype);
         }
+    }
+}
+
+static void cmd_lua(const char* UNUSED(pf), char **args)
+{
+    const char *const arg = *args;
+    lua_State *L = editor.L;
+    if (luaL_dostring(L, arg) != 0) {
+        error_msg("Lua error: %s", lua_tostring(L, -1));
+        lua_pop(L, -1);
     }
 }
 
@@ -1661,6 +1673,7 @@ const Command commands[] = {
     {"left", "", 0, 0, cmd_left},
     {"line", "", 1, 1, cmd_line},
     {"load-syntax", "", 1, 1, cmd_load_syntax},
+    {"lua", "", 1, 1, cmd_lua},
     {"move-tab", "", 1, 1, cmd_move_tab},
     {"msg", "np", 0, 0, cmd_msg},
     {"new-line", "", 0, 0, cmd_new_line},

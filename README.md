@@ -28,6 +28,8 @@ Requirements
 * [GNU Make] `>= 3.81`
 * [terminfo] library (typically provided by [ncurses] on Linux or by
   default on BSDs)
+* [Lua] 5.3
+* [pkg-config]
 
 Installation
 ------------
@@ -114,6 +116,8 @@ Public License version 2 for more details.
 [GNU Make]: https://www.gnu.org/software/make/
 [ncurses]: https://www.gnu.org/software/ncurses/
 [terminfo]: https://en.wikipedia.org/wiki/Terminfo
+[Lua]: https://www.lua.org/
+[pkg-config]: https://en.wikipedia.org/wiki/Pkg-config
 [ANSI]: http://www.ecma-international.org/publications/standards/Ecma-048.htm "ANSI X3.64 / ECMA-48 / ISO/IEC 6429"
 [`GNUmakefile`]: https://github.com/craigbarnes/dte/blob/master/GNUmakefile
 [syntax files]: https://github.com/craigbarnes/dte/tree/master/config/syntax

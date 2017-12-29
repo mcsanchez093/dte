@@ -2,6 +2,7 @@
 #define EDITOR_H
 
 #include <stdbool.h>
+#include <lua.h>
 #include "macros.h"
 #include "cmdline.h"
 #include "options.h"
@@ -44,6 +45,7 @@ typedef struct {
     PointerArray search_history;
     PointerArray command_history;
     const char *version;
+    lua_State *L;
 } EditorState;
 
 extern EditorState editor;

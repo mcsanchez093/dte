@@ -2,6 +2,7 @@ include mk/compat.mk
 include mk/util.mk
 -include Config.mk
 include mk/build.mk
+include mk/lua.mk
 include mk/check.mk
 include mk/docs.mk
 -include mk/dev.mk
@@ -44,7 +45,10 @@ clean:
 	$(RM) $(CLEANFILES)
 	$(if $(CLEANDIRS),$(RM) -r $(CLEANDIRS))
 
+clean-all: clean
+	$(MAKE) -C lib/lua clean
+
 
 .DEFAULT_GOAL = all
-.PHONY: all install uninstall tags clean
+.PHONY: all install uninstall tags clean clean-all
 .DELETE_ON_ERROR:

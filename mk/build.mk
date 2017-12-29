@@ -2,8 +2,6 @@ CC ?= gcc
 CFLAGS ?= -g -O2
 LDFLAGS ?=
 AWK = awk
-PKGCONFIG = pkg-config
-PKGLIBS = $(shell $(PKGCONFIG) --libs $(1) 2>/dev/null)
 VERSION = $(shell mk/version.sh 1.6)
 
 WARNINGS = \
@@ -35,7 +33,7 @@ editor_objects := $(addprefix build/, $(addsuffix .o, \
     file-history file-location file-option filetype fork format-status \
     frame git-open history hl indent input-special iter key \
     load-save lock main move msg normal-mode obuf options \
-    parse-args parse-command path ptr-array regexp run screen \
+    parse-args parse-command path ptr-array regexp run screen script \
     screen-tabbar screen-view search-mode search selection spawn state \
     strbuf syntax tabbar tag term-caps term uchar unicode view \
     wbuf window xmalloc ))
@@ -76,7 +74,8 @@ CSTD = $(call cc-option,-std=gnu11,-std=gnu99)
 $(call make-lazy,CWARNS)
 $(call make-lazy,CSTD)
 
-BASIC_CFLAGS += $(CSTD) -DDEBUG=$(DEBUG) $(CWARNS)
+BASIC_CFLAGS += $(CSTD) -DDEBUG=$(DEBUG) $(CWARNS) $(LUA_CFLAGS)
+LDLIBS += $(LUA_LDLIBS)
 
 ifeq "$(KERNEL)" "Darwin"
   LDLIBS += -liconv

@@ -1,5 +1,8 @@
 #include <locale.h>
 #include <langinfo.h>
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
 #include "editor.h"
 #include "buffer.h"
 #include "window.h"
@@ -11,6 +14,7 @@
 #include "config.h"
 #include "command.h"
 #include "error.h"
+#include "script.h"
 
 extern const EditorModeOps normal_mode_ops;
 extern const EditorModeOps command_mode_ops;
@@ -81,6 +85,17 @@ void init_editor_state(void)
 
     editor.options.statusline_left = xstrdup(" %f%s%m%r%s%M");
     editor.options.statusline_right = xstrdup(" %y,%X   %u   %E %n %t   %p ");
+
+    lua_State *L = editor.L = luaL_newstate();
+    if (L == NULL) {
+        fputs("luaL_newstate() failed; insufficient memory\n", stderr);
+        exit(1);
+    }
+    luaL_openlibs(L);
+    luaL_requiref(L, "editor", luaopen_editor, true);
+    BUG_ON(lua_gettop(L) != 1);
+    BUG_ON(!lua_istable(L, 1));
+    lua_pop(L, 1);
 }
 
 static void sanity_check(void)
