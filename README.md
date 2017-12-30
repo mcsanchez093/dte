@@ -82,6 +82,11 @@ The following optional build variables may be useful when packaging
 * `V=1`: Enable verbose build output.
 * `WERROR=1`: Turn all compiler warnings into errors. May be useful for
   running automated tests.
+* `STATIC_LUA=1`: Use static [Lua] library compiled from the source code
+  included in `lib/lua/`, instead of using [pkg-config] to find and link
+  with the system's dynamic Lua library. This is useful when creating a
+  statically linked binary or when no existing Lua 5.3 installation is
+  available.
 * `TERMINFO_DISABLE=1`: Use built-in terminal support, instead of
   linking to the system [terminfo]/curses library. This makes it much
   easier to build a portable, statically linked binary. The built-in
