@@ -5,7 +5,6 @@ PKGCFLAGS = $(shell $(PKGCONFIG) --cflags $(1) 2>/dev/null)
 PKGLIBS = $(shell $(PKGCONFIG) --libs $(1) 2>/dev/null)
 CMDFIND = $(shell for C in $(1); do command -v $$C && break; done)
 
-
 ifdef STATIC_LUA
   LUA_LDLIBS = lib/lua/src/liblua.a -lm
   LUA_CFLAGS = -I lib/lua/src/

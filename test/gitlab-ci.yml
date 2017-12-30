@@ -71,6 +71,6 @@ pages:
 pages:non-master:
     stage: dist
     image: registry.gitlab.com/craigbarnes/dockerfiles/cdev-debian
-    artifacts: {paths: [public]}
+    artifacts: {paths: [public], expire_in: 1 week}
     except: [master]
     script: *PAGES_SCRIPT
