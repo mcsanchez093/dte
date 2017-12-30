@@ -553,6 +553,24 @@ static void cmd_lua(const char* UNUSED(pf), char **args)
     }
 }
 
+static void cmd_lua_file(const char* UNUSED(pf), char **args)
+{
+    const char *const filename = *args;
+    lua_State *L = editor.L;
+
+    if (luaL_loadfilex(L, filename, "t") != LUA_OK) {
+        error_msg("Lua error: %s", lua_tostring(L, -1));
+        lua_pop(L, -1);
+        return;
+    }
+
+    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
+        error_msg("Lua error: %s", lua_tostring(L, -1));
+        lua_pop(L, -1);
+        return;
+    }
+}
+
 static void cmd_move_tab(const char* UNUSED(pf), char **args)
 {
     size_t j, i = ptr_array_idx(&window->views, view);
@@ -1674,6 +1692,7 @@ const Command commands[] = {
     {"line", "", 1, 1, cmd_line},
     {"load-syntax", "", 1, 1, cmd_load_syntax},
     {"lua", "", 1, 1, cmd_lua},
+    {"lua-file", "", 1, 1, cmd_lua_file},
     {"move-tab", "", 1, 1, cmd_move_tab},
     {"msg", "np", 0, 0, cmd_msg},
     {"new-line", "", 0, 0, cmd_new_line},
