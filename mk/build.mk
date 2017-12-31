@@ -74,7 +74,7 @@ CSTD = $(call cc-option,-std=gnu11,-std=gnu99)
 $(call make-lazy,CWARNS)
 $(call make-lazy,CSTD)
 
-BASIC_CFLAGS += $(CSTD) -DDEBUG=$(DEBUG) $(CWARNS)
+BASIC_CFLAGS += $(CSTD) -DDEBUG=$(DEBUG) $(CWARNS) $(LUA_CFLAGS)
 LDLIBS += $(LUA_LDLIBS)
 
 ifeq "$(KERNEL)" "Darwin"
@@ -115,10 +115,7 @@ build/builtin-config.h: build/builtin-config.list
 build/config.o: build/builtin-config.h
 build/term-caps.o: build/term-caps.cflags
 build/editor.o: build/editor.cflags
-build/script.o: build/script.cflags
-build/commands.o: build/commands.cflags
 build/editor.o: BASIC_CFLAGS += -DVERSION=\"$(VERSION)\"
-build/editor.o build/script.o build/commands.o: BASIC_CFLAGS += $(LUA_CFLAGS)
 
 $(dte):
 	$(E) LINK $@
