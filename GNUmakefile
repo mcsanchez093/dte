@@ -45,10 +45,7 @@ clean:
 	$(RM) $(CLEANFILES)
 	$(if $(CLEANDIRS),$(RM) -r $(CLEANDIRS))
 
-clean-all: clean
-	$(MAKE) -C lib/lua clean
-
 
 .DEFAULT_GOAL = all
-.PHONY: all install uninstall tags clean clean-all
+.PHONY: all install uninstall tags clean
 .DELETE_ON_ERROR:
