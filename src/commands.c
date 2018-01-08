@@ -545,10 +545,13 @@ static void cmd_load_syntax(const char* UNUSED(pf), char **args)
 
 static void cmd_lua(const char* UNUSED(pf), char **args)
 {
-    const char *const arg = *args;
+    const char *const text = *args;
     lua_State *L = editor.L;
-    if (luaL_dostring(L, arg) != 0) {
-        error_msg("Lua error: %s", lua_tostring(L, -1));
+    if (
+        luaL_loadbufferx(L, text, strlen(text), "=cmdline", "t") != LUA_OK
+        || lua_pcall(L, 0, 0, 0) != LUA_OK
+    ) {
+        error_msg("lua: %s", lua_tostring(L, -1));
         lua_pop(L, -1);
     }
 }
@@ -557,17 +560,12 @@ static void cmd_lua_file(const char* UNUSED(pf), char **args)
 {
     const char *const filename = *args;
     lua_State *L = editor.L;
-
-    if (luaL_loadfilex(L, filename, "t") != LUA_OK) {
-        error_msg("Lua error: %s", lua_tostring(L, -1));
+    if (
+        luaL_loadfilex(L, filename, "t") != LUA_OK
+        || lua_pcall(L, 0, 0, 0) != LUA_OK
+    ) {
+        error_msg("lua-file: %s", lua_tostring(L, -1));
         lua_pop(L, -1);
-        return;
-    }
-
-    if (lua_pcall(L, 0, 0, 0) != LUA_OK) {
-        error_msg("Lua error: %s", lua_tostring(L, -1));
-        lua_pop(L, -1);
-        return;
     }
 }
 
