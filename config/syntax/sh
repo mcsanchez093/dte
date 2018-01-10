@@ -3,7 +3,7 @@ syntax .sh-sq
 
 state string
     char "'" END string
-    eat string
+    eat this
 
 # Escape inside double quotes
 syntax .sh-dq-escape
@@ -29,11 +29,11 @@ state variable
     noeat END
 
 state name variable
-    char a-zA-Z_0-9 name
+    char a-zA-Z_0-9 this
     noeat END
 
 state brace variable
-    char -n "\n}" brace
+    char -n "\n}" this
     eat END variable
 
 # $((expr)) "$((" already eaten
@@ -42,7 +42,7 @@ syntax .sh-expression
 state expression special
     # FIXME: there can be almost anything in $(( ... ))
     char ')' expression-end
-    eat expression
+    eat this
 
 state expression-end special
     char ')' END special
@@ -53,9 +53,9 @@ syntax .sh-simple-dq
 
 state string
     char \" END string
-    char \\ .sh-dq-escape:string
+    char \\ .sh-dq-escape:this
     char \$ special
-    eat string
+    eat this
 
 state special
     char '(' paren
@@ -68,7 +68,7 @@ state paren special
 
 state command
     char ')' string special
-    char -n "\n" command
+    char -n "\n" this
     noeat string
 
 # $(cmd)
@@ -76,11 +76,11 @@ syntax .sh-pcommand
 
 state command
     char ')' END special
-    char \' .sh-sq:command
-    char \" .sh-simple-dq:command
-    char \\ .sh-command-escape:command
-    char \$ .sh-var:command
-    eat command
+    char \' .sh-sq:this
+    char \" .sh-simple-dq:this
+    char \\ .sh-command-escape:this
+    char \$ .sh-var:this
+    eat this
 
 # $var, $(command), $((expression))
 syntax .sh-dollar
@@ -99,22 +99,22 @@ syntax .sh-backtick
 
 state special
     # NOTE: you can't put "`" inside `...`, it's not possible
-    char \' .sh-sq:special
-    char \" .sh-simple-dq:special
-    char \\ .sh-command-escape:special
-    char \$ .sh-var:special
+    char \' .sh-sq:this
+    char \" .sh-simple-dq:this
+    char \\ .sh-command-escape:this
+    char \$ .sh-var:this
     char ` END special
-    eat special
+    eat this
 
 syntax .sh-dq
 
 # Double quoted string
 state string
     char '"' END string
-    char \\ .sh-dq-escape:string
-    char ` .sh-backtick:string
-    char \$ .sh-dollar:string
-    eat string
+    char \\ .sh-dq-escape:this
+    char ` .sh-backtick:this
+    char \$ .sh-dollar:this
+    eat this
 
 # Skip redirect etc. after <<EOF
 # e.g. cat <<EOF > /tmp/file
@@ -122,7 +122,7 @@ syntax .sh-heredoc-skip-line
 
 state start
     char "\n" END
-    eat start code
+    eat this code
 
 # Common to <<"EOF" and <<'EOF'
 syntax .sh-heredoc-common
@@ -136,7 +136,7 @@ state bol string
 
 state string
     char "\n" bol
-    eat string
+    eat this
 
 state match special
     char "\n" END
@@ -156,9 +156,9 @@ state bol string
 
 state string
     char "\n" bol
-    char \` .sh-backtick:string
-    char \$ .sh-dollar:string
-    eat string
+    char \` .sh-backtick:this
+    char \$ .sh-dollar:this
+    eat this
 
 state match special
     char "\n" END
@@ -192,7 +192,7 @@ state start code
 
 state command code
     # Eat all garbage to distinguish test/run.sh from builtin test
-    char -b a-zA-Z0-9_/.- command
+    char -b a-zA-Z0-9_/.- this
     inlist keyword1 start keyword
     inlist keyword2 args keyword
     inlist builtin args
@@ -212,7 +212,7 @@ state for keyword
     noeat forerror
 
 state forvar ident
-    char a-zA-Z_0-9 forvar
+    char a-zA-Z_0-9 this
     char " \t" forspace
     noeat forerror
 
@@ -231,22 +231,22 @@ state forerror code
 
 state args code
     char # comment
-    char "'" .sh-sq:args
-    char '"' .sh-dq:args
-    char \\ .sh-command-escape:args
-    char ` .sh-backtick:args
-    char \$ .sh-dollar:args
+    char "'" .sh-sq:this
+    char '"' .sh-dq:this
+    char \\ .sh-command-escape:this
+    char ` .sh-backtick:this
+    char \$ .sh-dollar:this
     char "\n" start
     # && is same as two &, same for |. does not matter
     char ";&|" start special
     # This might be error
-    char ()} args special
+    char ()} this special
     char < lt
-    eat args
+    eat this
 
 state comment
     char "\n" start
-    eat comment
+    eat this
 
 state lt special
     char < lt2
@@ -270,11 +270,11 @@ state heredoc-start special
     noeat heredoc
 
 state heredoc-dq string
-    char -bn "\"\n" heredoc-dq
+    char -bn "\"\n" this
     heredocbegin .sh-heredoc-dq start
 
 state heredoc-sq string
-    char -bn "\'\n" heredoc-sq
+    char -bn "\'\n" this
     heredocbegin .sh-heredoc-sq start
 
 state heredoc special
