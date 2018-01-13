@@ -15,7 +15,6 @@ typedef struct {
 } Binding;
 
 static KeyChain pressed_keys;
-
 static PointerArray bindings = PTR_ARRAY_INIT;
 
 static bool parse_keys(KeyChain *chain, const char *str)
@@ -32,12 +31,10 @@ static bool parse_keys(KeyChain *chain, const char *str)
 
     memzero(chain);
     for (size_t i = 0; i < len; ) {
-        const char *key;
-
         while (i < len && keys[i] == 0) {
             i++;
         }
-        key = keys + i;
+        const char *key = keys + i;
         while (i < len && keys[i] != 0) {
             i++;
         }
@@ -67,9 +64,7 @@ static bool parse_keys(KeyChain *chain, const char *str)
 
 void add_binding(const char *keys, const char *command)
 {
-    Binding *b;
-
-    b = xnew(Binding, 1);
+    Binding *b = xnew(Binding, 1);
     if (!parse_keys(&b->chain, keys)) {
         free(b);
         return;
