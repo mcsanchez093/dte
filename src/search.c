@@ -281,7 +281,7 @@ static void build_replacement (
                 if (len > 0) {
                     string_add_buf(buf, line + m[n].rm_so, len);
                 }
-            } else {
+            } else if (format[i] != '\0') {
                 string_add_byte(buf, format[i++]);
             }
         } else if (ch == '&') {
@@ -362,7 +362,7 @@ static int replace_on_line (
             build_replacement(&b, buf + pos, format, m);
 
             // lineref is invalidated by modification
-            if (buf == lr->line) {
+            if (buf == lr->line && lr->size != 0) {
                 buf = xmemdup(buf, lr->size);
             }
 
@@ -410,6 +410,11 @@ void reg_replace(const char *pattern, const char *format, ReplaceFlags flags)
     int nr_substitutions = 0;
     int nr_lines = 0;
     regex_t re;
+
+    if (pattern[0] == '\0') {
+        error_msg("Search pattern must contain at least 1 character");
+        return;
+    }
 
     if (flags & REPLACE_IGNORE_CASE) {
         re_flags |= REG_ICASE;
