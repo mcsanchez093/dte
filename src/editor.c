@@ -29,9 +29,14 @@ EditorState editor = {
     .resized = false,
     .search_history = PTR_ARRAY_INIT,
     .command_history = PTR_ARRAY_INIT,
-    .cmdline = CMDLINE_INIT,
-    .cmdline_x = 0,
     .version = VERSION,
+    .cmdline_x = 0,
+    .cmdline = {
+        .buf = STRING_INIT,
+        .pos = 0,
+        .search_pos = -1,
+        .search_text = NULL
+    },
     .options = {
         .auto_indent = true,
         .detect_indent = 0,
@@ -420,7 +425,7 @@ char get_confirmation(const char *choices, const char *format, ...)
 
 typedef struct {
     bool is_modified;
-    int id;
+    unsigned int id;
     int cy;
     int vx;
     int vy;

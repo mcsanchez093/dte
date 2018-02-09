@@ -14,6 +14,14 @@
     / ((size_t)(!(sizeof(x) % sizeof((x)[0])))) \
 )
 
+#ifdef __GNUC__
+    #define GNUC_AT_LEAST(major, minor) ( \
+        (__GNUC__ > major) \
+        || ((__GNUC__ == major) && (__GNUC_MINOR__ >= minor)) )
+#else
+    #define GNUC_AT_LEAST(major, minor) 0
+#endif
+
 // __has_extension is a Clang macro used to determine if a feature is
 // available even if not standardized in the current "-std" mode.
 #ifdef __has_extension
@@ -36,37 +44,41 @@
 
 #define DO_PRAGMA(x) _Pragma(#x)
 
-#if defined(__GNUC__) && (__GNUC__ >= 3)
-    #define likely(x) __builtin_expect(!!(x), 1)
-    #define unlikely(x) __builtin_expect(!!(x), 0)
+#if GNUC_AT_LEAST(3, 0)
     #define UNUSED(x) UNUSED__ ## x __attribute__((__unused__))
     #define MALLOC __attribute__((__malloc__))
-    #define FORMAT(idx) __attribute__((__format__(printf, (idx), (idx + 1))))
+    #define PRINTF(x) __attribute__((__format__(__printf__, (x), (x + 1))))
     #define PURE __attribute__((__pure__))
     #define CONST_FN __attribute__((__const__))
 #else
-    #define likely(x) (x)
-    #define unlikely(x) (x)
     #define UNUSED
     #define MALLOC
-    #define FORMAT(idx)
+    #define PRINTF(x)
     #define PURE
     #define CONST_FN
 #endif
 
-#if (defined(__GNUC__) && __GNUC__ >= 4) || HAS_ATTRIBUTE(nonnull)
+#if GNUC_AT_LEAST(3, 0) && defined(__OPTIMIZE__)
+    #define likely(x) __builtin_expect(!!(x), 1)
+    #define unlikely(x) __builtin_expect(!!(x), 0)
+#else
+    #define likely(x) (x)
+    #define unlikely(x) (x)
+#endif
+
+#if GNUC_AT_LEAST(4, 0) || HAS_ATTRIBUTE(nonnull)
     #define NONNULL_ARGS __attribute__((__nonnull__))
 #else
     #define NONNULL_ARGS
 #endif
 
-#if (defined(__GNUC__) && __GNUC__ >= 5) || HAS_ATTRIBUTE(returns_nonnull)
+#if GNUC_AT_LEAST(5, 0) || HAS_ATTRIBUTE(returns_nonnull)
     #define RETURNS_NONNULL __attribute__((__returns_nonnull__))
 #else
     #define RETURNS_NONNULL
 #endif
 
-#if defined(__GNUC__) && (__GNUC__ >= 5)
+#if GNUC_AT_LEAST(5, 0)
     #define MESSAGE(x) DO_PRAGMA(message #x)
 #else
     #define MESSAGE(x)
@@ -74,7 +86,7 @@
 
 #if __STDC_VERSION__ >= 201112L
     #define NORETURN _Noreturn
-#elif defined(__GNUC__) && (__GNUC__ >= 3)
+#elif GNUC_AT_LEAST(3, 0)
     #define NORETURN __attribute__((__noreturn__))
 #else
     #define NORETURN
@@ -92,7 +104,7 @@
 //
 // 1. The ability to apply pragmas at the granularity of individual
 //    function arguments instead of whole statements.
-// 2. A flag that only suppresses dicarded qualifier warnings without
+// 2. A flag that only suppresses discarded qualifier warnings without
 //    also suppressing incompatible-pointer-types warnings.
 // 3. Some mechanism equivalent to __has_warning().
 //

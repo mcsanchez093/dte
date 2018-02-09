@@ -9,9 +9,9 @@ seealso: ["`dte`", "`dte-syntax`"]
 
 # dterc
 
-dterc is the language used in `dte` configuration files and also in the
-command mode of the editor. The syntax of the language is quite similar
-to shell, but much simpler.
+dterc is the language used in `dte` configuration files (`~/.dte/rc`)
+and also in the command mode of the editor (Alt+x). The syntax of the
+language is quite similar to shell, but much simpler.
 
 Commands are separated either by a newline or `;` character. To make a
 command span multiple lines in an rc file, escape the newline (put `\`
@@ -63,10 +63,10 @@ Double quoted strings may contain the following escapes:
     strings are NUL-terminated.
 
 `\u20ac`
-:   Four hex digit unicode code point U+20AC.
+:   Four hex digit Unicode code point U+20AC.
 
 `\U000020ac`
-:   Eight hex digit unicode code point U+20AC.
+:   Eight hex digit Unicode code point U+20AC.
 
 # Commands
 
@@ -421,7 +421,7 @@ the following prefixes:
 :   Insert 2-digit hexadecimal byte value
 
 `u`
-:   Insert 6-digit hexadecimal unicode value
+:   Insert 6-digit hexadecimal Unicode value
 
 ### **join**
 
@@ -902,7 +902,7 @@ Format string for the left aligned part of status line.
 :   File type.
 
 `%u`
-:   Hexadecimal unicode value value of character under cursor.
+:   Hexadecimal Unicode value value of character under cursor.
 
 `%%`
 :   Literal `%`.
